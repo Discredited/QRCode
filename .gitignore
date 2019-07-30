@@ -1,0 +1,17 @@
+*.iml
+.gradle
+/.idea
+/.idea/codeStyles
+/.idea/workspace.xml
+/.idea/libraries
+/.idea/encodings.xml
+/.idea/gradle.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/build
+/app/build
+gradlew
+gradlew.bat
+/local.properties
+app/libs/
