@@ -24,7 +24,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="12dp"
         android:gravity="start|center_vertical"
-        android:hint="@string/prompt_input_qr_code_content"
+        android:hint="@string/prompt_input_special_qr_code_content"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

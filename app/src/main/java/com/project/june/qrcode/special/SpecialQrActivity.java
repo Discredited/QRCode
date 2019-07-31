@@ -1,33 +1,35 @@
-package com.project.june.qrcode.normal;
+package com.project.june.qrcode.special;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.project.june.qrcode.R;
 import com.project.june.qrcode.util.QRCodeUtils;
 
-public class NormalQrActivity extends AppCompatActivity implements View.OnClickListener {
+public class SpecialQrActivity extends AppCompatActivity implements View.OnClickListener {
 
     private AppCompatEditText etQrCodeContent;
     private AppCompatImageView ivQrCode;
 
     public static void startThis(Context context) {
-        Intent intent = new Intent(context, NormalQrActivity.class);
-        context.startActivity(intent);
+        Intent starter = new Intent(context, SpecialQrActivity.class);
+        context.startActivity(starter);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_normal_qr);
+        setContentView(R.layout.activity_special_qr);
 
         ivQrCode = findViewById(R.id.iv_qr_code);
         etQrCodeContent = findViewById(R.id.et_qr_code_content);
@@ -44,7 +46,8 @@ public class NormalQrActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-        Bitmap bitmap = QRCodeUtils.createQRCode(content);
+        int size = ConvertUtils.dp2px(300);
+        Bitmap bitmap = QRCodeUtils.createDIYQRCode(content, size, size);
         if (null == bitmap) {
             ToastUtils.showShort(getString(R.string.prompt_create_qr_code_error));
             return;
