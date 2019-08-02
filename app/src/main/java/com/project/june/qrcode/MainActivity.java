@@ -5,7 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.project.june.qrcode.normal.NormalQrActivity;
-import com.project.june.qrcode.special.SpecialQrActivity;
+import com.project.june.qrcode.special.activity.SpecialDiyQrActivity;
+import com.project.june.qrcode.special.activity.SpecialQrActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +26,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SpecialQrActivity.startThis(MainActivity.this);
+            }
+        });
+        findViewById(R.id.special_diy_code).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SpecialDiyQrActivity.startThis(MainActivity.this);
             }
         });
     }

@@ -1,4 +1,4 @@
-package com.project.june.qrcode.special;
+package com.project.june.qrcode.special.activity;
 
 import android.content.Context;
 import android.content.Intent;

@@ -3,6 +3,7 @@
 
     <string name="normal_qr_code_title">生成一般二维码</string>
     <string name="special_qr_code_title">生成特殊二维码</string>
+    <string name="special_diy_qr_code_title">生成特殊DIY二维码</string>
 
     <string name="button_sure">确定</string>
 
