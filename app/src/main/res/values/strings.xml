@@ -7,6 +7,10 @@
 
     <string name="button_sure">确定</string>
 
+    <string name="title_theme_color">Color</string>
+    <string name="title_theme_cook">Cook</string>
+    <string name="title_theme_city">City</string>
+
     <string name="prompt_input_qr_code_content">请输入一般二维码内容</string>
     <string name="prompt_input_special_qr_code_content">请输入特殊二维码内容</string>
 

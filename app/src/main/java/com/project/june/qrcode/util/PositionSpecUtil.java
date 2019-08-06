@@ -1,5 +1,6 @@
 package com.project.june.qrcode.util;
 
+import android.graphics.Bitmap;
 import android.graphics.Point;
 
 import com.google.zxing.qrcode.encoder.ByteMatrix;
@@ -19,31 +20,37 @@ public class PositionSpecUtil {
     public static final String SPEC_1_3 = "1*3";
     public static final String SPEC_2_1 = "2*1";
     public static final String SPEC_2_2 = "2*2";
+    public static final String SPEC_2_3 = "2*3";
     public static final String SPEC_3_1 = "3*1";
 
     //判断一个点的规格  并且关联的点没有在remark中（这一步是为了去重，保证一个点只被使用一次）
-    public static String getPositionSpec(int x, int y, ByteMatrix matrix, HashMap<Point, Boolean> remarkMap) {
+    //并不是所有规则都要检查   而是需要根据当前素材提供的规格来进行检查
+    public static String getPositionSpec(int x, int y, ByteMatrix matrix, HashMap<String, List<Bitmap>> materialMap, HashMap<Point, Boolean> remarkMap) {
         if (checkPosition(x, y, matrix)) {
             return SPEC_POSITION;
         }
 
-//        if (checkSpec3_1(x, y, matrix, remarkMap)) {
-//            return SPEC_3_1;
-//        }
+        if (materialMap.containsKey(SPEC_3_1) && checkSpec3_1(x, y, matrix, remarkMap)) {
+            return SPEC_3_1;
+        }
 
-        if (checkSpec2_2(x, y, matrix, remarkMap)) {
+        if (materialMap.containsKey(SPEC_2_2) && checkSpec2_2(x, y, matrix, remarkMap)) {
             return SPEC_2_2;
         }
 
-//        if (checkSpec1_3(x, y, matrix, remarkMap)) {
-//            return SPEC_1_3;
-//        }
+        if (materialMap.containsKey(SPEC_2_3) && checkSpec2_3(x, y, matrix, remarkMap)) {
+            return SPEC_2_3;
+        }
 
-        if (checkSpec1_2(x, y, matrix, remarkMap)) {
+        if (materialMap.containsKey(SPEC_1_3) && checkSpec1_3(x, y, matrix, remarkMap)) {
+            return SPEC_1_3;
+        }
+
+        if (materialMap.containsKey(SPEC_1_2) && checkSpec1_2(x, y, matrix, remarkMap)) {
             return SPEC_1_2;
         }
 
-        if (checkSpec1_1(x, y, matrix, remarkMap)) {
+        if (materialMap.containsKey(SPEC_1_1) && checkSpec1_1(x, y, matrix, remarkMap)) {
             return SPEC_1_1;
         }
 
@@ -148,6 +155,30 @@ public class PositionSpecUtil {
             // 1(x,y)     1(x+1,y)
             // 1(x,y+1)   1(x+1,y+1)
             return matrix.get(x + 1, y) == 1 && matrix.get(x, y + 1) == 1 && matrix.get(x + 1, y + 1) == 1;
+        }
+        return false;
+    }
+
+    //2*3
+    public static boolean checkSpec2_3(int x, int y, ByteMatrix matrix, HashMap<Point, Boolean> remarkMap) {
+        int matrixWidth = matrix.getWidth();
+        int matrixHeight = matrix.getHeight();
+        if (x < matrixWidth - 1 && y < matrixHeight - 2) {
+            if (remarkMap.containsKey(new Point(x + 1, y)) ||
+                    remarkMap.containsKey(new Point(x, y + 1)) ||
+                    remarkMap.containsKey(new Point(x + 1, y + 1)) ||
+                    remarkMap.containsKey(new Point(x, y + 2)) ||
+                    remarkMap.containsKey(new Point(x + 1, y + 2))) {
+                return false;
+            }
+
+
+            // 1(x,y)     1(x+1,y)
+            // 1(x,y+1)   1(x+1,y+1)
+            // 1(x,y+2)   1(x+1,y+2)
+            return matrix.get(x + 1, y) == 1 &&
+                    matrix.get(x, y + 1) == 1 && matrix.get(x + 1, y + 1) == 1 &&
+                    matrix.get(x, y + 2) == 1 && matrix.get(x + 1, y + 2) == 1;
         }
         return false;
     }

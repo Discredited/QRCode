@@ -10,22 +10,23 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.project.june.qrcode.R;
-import com.project.june.qrcode.special.bean.MaterialBean;
+import com.project.june.qrcode.util.MaterialFactory;
 import com.project.june.qrcode.util.QRCodeUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SpecialDiyQrActivity extends AppCompatActivity implements View.OnClickListener {
 
     private AppCompatEditText etQrCodeContent;
     private AppCompatImageView ivQrCode;
 
-    private List<MaterialBean> materialList = new ArrayList<>();
+    private RadioGroup rgThemeGroup;
+
+    private int materialTheme;
 
     public static void startThis(Context context) {
         Intent starter = new Intent(context, SpecialDiyQrActivity.class);
@@ -35,22 +36,30 @@ public class SpecialDiyQrActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_special_qr);
+        setContentView(R.layout.activity_special_diy_qr);
 
         ivQrCode = findViewById(R.id.iv_qr_code);
         etQrCodeContent = findViewById(R.id.et_qr_code_content);
+
+        rgThemeGroup = findViewById(R.id.rg_theme_group);
+
         findViewById(R.id.bt_sure).setOnClickListener(this);
 
-        //定位点
-        materialList.add(new MaterialBean(7, 7, R.drawable.ic_color_position_green));
-        materialList.add(new MaterialBean(7, 7, R.drawable.ic_color_position_orange));
-        materialList.add(new MaterialBean(7, 7, R.drawable.ic_color_position_red));
 
-        materialList.add(new MaterialBean(1, 1, R.drawable.ic_color_spec_green_1_1));
-        materialList.add(new MaterialBean(1, 1, R.drawable.ic_color_spec_orange_1_1));
-        materialList.add(new MaterialBean(1, 2, R.drawable.ic_color_spec_green_1_2));
-        materialList.add(new MaterialBean(1, 2, R.drawable.ic_color_spec_orange_1_2));
-        materialList.add(new MaterialBean(2, 2, R.drawable.ic_color_spec_2_2));
+        rgThemeGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                for (int i = 0; i < group.getChildCount(); i++) {
+                    if (((RadioButton) group.getChildAt(i)).isChecked()) {
+                        materialTheme = i;
+                        break;
+                    }
+                }
+            }
+        });
+
+        ((RadioButton) rgThemeGroup.getChildAt(0)).setChecked(true);
+        materialTheme = 0;
     }
 
     private void createBitmap() {
@@ -64,7 +73,7 @@ public class SpecialDiyQrActivity extends AppCompatActivity implements View.OnCl
         }
 
         int size = ConvertUtils.dp2px(300);
-        Bitmap bitmap = QRCodeUtils.createDIYQRCode(content, size, size, materialList);
+        Bitmap bitmap = QRCodeUtils.createDIYQRCode(content, size, size, MaterialFactory.getMaterialList(materialTheme));
         if (null == bitmap) {
             ToastUtils.showShort(getString(R.string.prompt_create_qr_code_error));
             return;

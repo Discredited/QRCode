@@ -278,8 +278,7 @@ public class QRCodeUtils {
                             continue;
                         }
 
-                        String positionSpec = PositionSpecUtil.getPositionSpec(x, y, matrix, remarkMap);
-
+                        String positionSpec = PositionSpecUtil.getPositionSpec(x, y, matrix, materialMap, remarkMap);
 
                         List<Bitmap> bitmaps = materialMap.get(positionSpec);
                         if (null == bitmaps || bitmaps.isEmpty()) {
@@ -349,35 +348,17 @@ public class QRCodeUtils {
                 }
             }
 
-            // TODO: 2019/8/2 没有写完
             //绘制定位点
             List<Bitmap> bitmaps = materialMap.get(PositionSpecUtil.SPEC_POSITION);
-            if (null != bitmaps && bitmaps.size() > 2) {
-                Rect positionRect = new Rect();
-                RectF positionRectF = new RectF();
-                positionRect.left = 0;
-                positionRect.top = 0;
-                positionRect.right = bitmaps.get(0).getWidth();
-                positionRect.bottom = bitmaps.get(0).getHeight();
 
-                positionRectF.left = outputLeft;
-                positionRectF.top = outputTop;
-                positionRectF.right = positionRectF.left + cellWidth * 7;
-                positionRectF.bottom = positionRectF.top + cellWidth * 7;
-
-                canvas.drawBitmap(bitmaps.get(0), positionRect, positionRectF, bitmapPaint);
-
-                positionRectF.top = outputTop;
-                positionRectF.right = outputWidth - outputLeft;
-                positionRectF.left = positionRectF.right - cellWidth * 7;
-                positionRectF.bottom = positionRectF.top + cellWidth * 7;
-                canvas.drawBitmap(bitmaps.get(1), positionRect, positionRectF, bitmapPaint);
-
-                positionRectF.left = outputLeft;
-                positionRectF.right = positionRectF.left + cellWidth * 7;
-                positionRectF.bottom = outputHeight - outputTop;
-                positionRectF.top = positionRectF.bottom - cellWidth * 7;
-                canvas.drawBitmap(bitmaps.get(2), positionRect, positionRectF, bitmapPaint);
+            //当定位点图片有三个时，保证每个图片都使用一次，否则随机取图片显示
+            if (null != bitmaps && bitmaps.size() >= 3) {
+                drawPosition(outputLeft, outputTop, outputWidth, outputHeight, cellWidth, bitmaps, canvas, bitmapPaint, 0, 1, 2);
+            } else if (null != bitmaps) {
+                int first = (int) (Math.random() * 10 % bitmaps.size());
+                int second = (int) (Math.random() * 10 % bitmaps.size());
+                int third = (int) (Math.random() * 10 % bitmaps.size());
+                drawPosition(outputLeft, outputTop, outputWidth, outputHeight, cellWidth, bitmaps, canvas, bitmapPaint, first, second, third);
             }
 
             return bitmap;
@@ -385,6 +366,35 @@ public class QRCodeUtils {
             Log.e(TAG, "createQRCodeBitmap: " + e.getMessage());
         }
         return null;
+    }
+
+    public static void drawPosition(int outputLeft, int outputTop, int outputWidth, int outputHeight, int cellWidth, List<Bitmap> bitmaps, Canvas canvas, Paint bitmapPaint,
+                                    int first, int second, int third) {
+        Rect positionRect = new Rect();
+        RectF positionRectF = new RectF();
+        positionRect.left = 0;
+        positionRect.top = 0;
+        positionRect.right = bitmaps.get(first).getWidth();
+        positionRect.bottom = bitmaps.get(first).getHeight();
+
+        positionRectF.left = outputLeft;
+        positionRectF.top = outputTop;
+        positionRectF.right = positionRectF.left + cellWidth * 7;
+        positionRectF.bottom = positionRectF.top + cellWidth * 7;
+
+        canvas.drawBitmap(bitmaps.get(first), positionRect, positionRectF, bitmapPaint);
+
+        positionRectF.top = outputTop;
+        positionRectF.right = outputWidth - outputLeft;
+        positionRectF.left = positionRectF.right - cellWidth * 7;
+        positionRectF.bottom = positionRectF.top + cellWidth * 7;
+        canvas.drawBitmap(bitmaps.get(second), positionRect, positionRectF, bitmapPaint);
+
+        positionRectF.left = outputLeft;
+        positionRectF.right = positionRectF.left + cellWidth * 7;
+        positionRectF.bottom = outputHeight - outputTop;
+        positionRectF.top = positionRectF.bottom - cellWidth * 7;
+        canvas.drawBitmap(bitmaps.get(third), positionRect, positionRectF, bitmapPaint);
     }
 
     //检查定位点
